@@ -1,0 +1,6 @@
+# Internal tooling and raw source files — not part of the public site
+xray/
+uploads/
+_preview-references.html
+.thumbnail
+*.pdf
