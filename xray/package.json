@@ -1,0 +1,15 @@
+{
+  "name": "rixza-xray",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RIXZA X-Ray — free digital diagnostic engine (6-dimension Digital Performance Score).",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js",
+    "analyze": "node cli.js"
+  },
+  "dependencies": {}
+}

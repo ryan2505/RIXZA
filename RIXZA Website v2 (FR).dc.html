@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #000; }
+  body { font-family: 'Space Grotesk', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #6b6bff; text-decoration: none; }
+  a:hover { color: #ffffff; }
+  input, button, textarea, select { font: inherit; }
+  ::placeholder { color: rgba(255,255,255,0.32); }
+  @keyframes rxsweep { 0% { transform: translateY(-110%); } 100% { transform: translateY(510%); } }
+  @keyframes rxpulse { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+  @keyframes rxmarquee { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+</style>
+</helmet>
+
+<div style="background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center">
+<div style="width:100%;max-width:{{ frameW }};overflow:hidden;border-left:1px solid rgba(255,255,255,0.06);border-right:1px solid rgba(255,255,255,0.06)">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:{{ navPad }};background:rgba(0,0,0,0.84);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.08)">
+    <div onClick="{{ goHome }}" style="cursor:pointer;flex:0 0 auto;overflow:hidden;width:{{ logoBoxW }};height:{{ logoBoxH }};position:relative">
+      <img src="assets/rixza-lockup-white.png" alt="RIXZA" style="position:absolute;left:{{ logoLeft }};top:{{ logoTop }};width:{{ logoImgW }};height:auto;max-width:none;display:block" />
+    </div>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,0.62)">
+      <div onClick="{{ goSolutions }}" style="cursor:pointer" style-hover="color:#fff">Solutions</div>
+      <div onClick="{{ goMethod }}" style="cursor:pointer" style-hover="color:#fff">Méthode</div>
+      <div onClick="{{ goWork }}" style="cursor:pointer" style-hover="color:#fff">Réalisations</div>
+      <div onClick="{{ goAbout }}" style="cursor:pointer" style-hover="color:#fff">Entreprise</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex:0 0 auto">
+      <div onClick="{{ goAudit }}" style="cursor:pointer;padding:12px 20px;border:1px solid rgba(255,255,255,0.22);font-size:13px;font-weight:500" style-hover="border-color:#fff">Audit gratuit</div>
+      <div onClick="{{ goContact }}" style="cursor:pointer;padding:12px 20px;background:#0000FF;font-size:13px;font-weight:500;color:#fff" style-hover="background:#2a2aff">Parler à RIXZA</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleMenu }}" style="width:48px;height:48px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;flex:0 0 auto">
+      <div style="width:22px;height:1.5px;background:#fff"></div>
+      <div style="width:22px;height:1.5px;background:{{ burgerSecond }}"></div>
+    </div>
+    </sc-if>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:412px;max-width:100%;z-index:60;background:#000;display:flex;flex-direction:column;border-left:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="overflow:hidden;width:151px;height:34px;position:relative">
+        <img src="assets/rixza-lockup-white.png" alt="RIXZA" style="position:absolute;left:-40px;top:-56px;width:237px;height:auto;max-width:none;display:block" />
+      </div>
+      <div onClick="{{ toggleMenu }}" style="width:48px;height:48px;margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:28px;line-height:1;color:rgba(255,255,255,0.7);cursor:pointer">×</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 20px 24px;display:flex;flex-direction:column">
+      <div onClick="{{ menuSolutions }}" style="padding:19px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:27px;font-weight:600;letter-spacing:-0.02em;cursor:pointer">Solutions</div>
+      <div onClick="{{ menuMethod }}" style="padding:19px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:27px;font-weight:600;letter-spacing:-0.02em;cursor:pointer">Méthode</div>
+      <div onClick="{{ menuWork }}" style="padding:19px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:27px;font-weight:600;letter-spacing:-0.02em;cursor:pointer">Réalisations</div>
+      <div onClick="{{ menuAbout }}" style="padding:19px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:27px;font-weight:600;letter-spacing:-0.02em;cursor:pointer">Entreprise</div>
+      <div onClick="{{ menuContact }}" style="padding:19px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:27px;font-weight:600;letter-spacing:-0.02em;cursor:pointer">Contact</div>
+      <div style="margin-top:30px;display:flex;flex-direction:column;gap:12px">
+        <div onClick="{{ menuAudit }}" style="text-align:center;padding:18px;background:#0000FF;font-size:16px;font-weight:600;cursor:pointer">Audit Digital Growth gratuit</div>
+        <div onClick="{{ menuContact }}" style="text-align:center;padding:18px;border:1px solid rgba(255,255,255,0.25);font-size:16px;font-weight:500;cursor:pointer">Parler à RIXZA</div>
+      </div>
+      <div style="margin-top:auto;padding-top:26px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.32);line-height:1.8">DOUALA, CAMEROUN<br />+237 699 617 906</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ ACCUEIL ============ -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div>
+    <div style="padding:{{ heroPad }};border-bottom:1px solid rgba(255,255,255,0.08);background:radial-gradient(120% 90% at 82% 8%, rgba(0,0,255,0.16) 0%, rgba(0,0,0,0) 60%)">
+      <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:56px;align-items:center">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid rgba(255,255,255,0.16);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:32px">
+            <span style="width:6px;height:6px;background:#0000FF;display:block;animation:rxpulse 2s ease-in-out infinite"></span>
+            Partenaire de croissance digitale &amp; technologique
+          </div>
+          <h1 style="margin:0 0 24px;font-size:{{ h1Size }};line-height:1.03;letter-spacing:-0.035em;font-weight:600;text-wrap:balance">Nous construisons l'infrastructure digitale qui accompagne votre croissance.</h1>
+          <p style="margin:0 0 36px;font-size:{{ leadSize }};line-height:1.55;color:rgba(255,255,255,0.6);max-width:560px;text-wrap:pretty">Des systèmes conçus pour attirer davantage de clients, convertir les opportunités et mieux piloter l'activité — du site web au CRM, de l'automatisation aux logiciels sur mesure.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+            <div onClick="{{ goAudit }}" style="cursor:pointer;padding:17px 28px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Audit Digital Growth gratuit</div>
+            <div onClick="{{ goContact }}" style="cursor:pointer;padding:17px 28px;border:1px solid rgba(255,255,255,0.25);font-size:15px;font-weight:500" style-hover="border-color:#fff">Parler à RIXZA</div>
+          </div>
+          <div style="margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:rgba(255,255,255,0.38)">GRATUIT • 60 SECONDES • SANS ENGAGEMENT</div>
+        </div>
+
+        <div style="position:relative;background:#050505;border:1px solid rgba(255,255,255,0.12);padding:28px">
+          <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
+            <div style="position:absolute;left:0;right:0;height:80px;background:linear-gradient(180deg,rgba(0,0,255,0) 0%,rgba(0,0,255,0.14) 50%,rgba(0,0,255,0) 100%);animation:rxsweep 4.5s linear infinite"></div>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:rgba(255,255,255,0.5)">AUDIT DIGITAL GROWTH</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6b6bff">DÉMO</div>
+          </div>
+          <div style="position:relative;display:flex;gap:24px;align-items:center;margin-bottom:24px;flex-wrap:wrap">
+            <div style="width:126px;height:126px;border-radius:50%;background:{{ demoRing }};display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+              <div style="width:106px;height:106px;border-radius:50%;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div style="font-size:36px;font-weight:600;letter-spacing:-0.03em;line-height:1">{{ demoScore }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.42)">/100</div>
+              </div>
+            </div>
+            <div style="flex:1 1 150px;min-width:150px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:7px">NIVEAU ÉVALUÉ</div>
+              <div style="font-size:20px;font-weight:600;margin-bottom:10px">NIVEAU CROISSANCE</div>
+              <div style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.5)">Opportunités importantes détectées sur la conversion et la visibilité.</div>
+            </div>
+          </div>
+          <div style="position:relative;display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ demoDims }}" as="d" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="flex:0 0 {{ dimLabelW }};font-size:12.5px;color:rgba(255,255,255,0.62)">{{ d.label }}</div>
+                <div style="flex:1;height:4px;background:rgba(255,255,255,0.09)">
+                  <div style="height:4px;background:#0000FF;width:{{ d.pct }}"></div>
+                </div>
+                <div style="flex:0 0 28px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:rgba(255,255,255,0.8)">{{ d.score }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div onClick="{{ goAudit }}" style="position:relative;margin-top:24px;cursor:pointer;text-align:center;padding:15px;border:1px solid rgba(255,255,255,0.2);font-size:14px;font-weight:500" style-hover="border-color:#fff;background:rgba(255,255,255,0.04)">Lancer l'audit sur votre site →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RÉFÉRENCES -->
+    <div style="padding:{{ bandPad }};border-bottom:1px solid rgba(255,255,255,0.08);overflow:hidden">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:rgba(255,255,255,0.4);margin-bottom:30px">ILS NOUS ONT FAIT CONFIANCE</div>
+        <div style="position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent)">
+          <div style="display:flex;align-items:center;gap:70px;width:max-content;animation:rxmarquee 32s linear infinite">
+            <img src="assets/clients/tanhealth.png" alt="TaN Health & Wellness" style="height:42px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/boldtribe.png" alt="Bold Tribe Capital" style="height:52px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/arcenciel.png" alt="Arc En Ciel" style="height:46px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/zipclean.png" alt="Zip Clean" style="height:42px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/smarthouse.png" alt="Smart House" style="height:38px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/tanhealth.png" alt="" aria-hidden="true" style="height:42px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/boldtribe.png" alt="" aria-hidden="true" style="height:52px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/arcenciel.png" alt="" aria-hidden="true" style="height:46px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/zipclean.png" alt="" aria-hidden="true" style="height:42px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+            <img src="assets/clients/smarthouse.png" alt="" aria-hidden="true" style="height:38px;width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity 0.3s" style-hover="opacity:1" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLÈME -->
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:56px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:20px">01 — LE CONSTAT</div>
+          <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">De bons produits. Une infrastructure digitale qui ne suit pas.</h2>
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <div style="padding:22px 0;border-top:1px solid rgba(255,255,255,0.12)">
+            <div style="font-size:17.5px;font-weight:600;margin-bottom:7px">Un site qui ne reflète pas votre valeur réelle</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.52)">La crédibilité se joue en ligne avant le premier échange — et se perd au même endroit.</div>
+          </div>
+          <div style="padding:22px 0;border-top:1px solid rgba(255,255,255,0.12)">
+            <div style="font-size:17.5px;font-weight:600;margin-bottom:7px">Une visibilité faible sur les moteurs de recherche</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.52)">Les prospects qui cherchent votre expertise trouvent d'abord vos concurrents.</div>
+          </div>
+          <div style="padding:22px 0;border-top:1px solid rgba(255,255,255,0.12)">
+            <div style="font-size:17.5px;font-weight:600;margin-bottom:7px">Une gestion dispersée des prospects</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.52)">WhatsApp, e-mails, carnets : les opportunités se perdent entre les outils.</div>
+          </div>
+          <div style="padding:22px 0;border-top:1px solid rgba(255,255,255,0.12)">
+            <div style="font-size:17.5px;font-weight:600;margin-bottom:7px">Des processus manuels qui coûtent du temps</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.52)">Relances, devis, suivi, reporting : le temps passé n'est pas du temps vendu.</div>
+          </div>
+          <div style="padding:22px 0;border-top:1px solid rgba(255,255,255,0.12);border-bottom:1px solid rgba(255,255,255,0.12)">
+            <div style="font-size:17.5px;font-weight:600;margin-bottom:7px">Une dépendance excessive aux réseaux sociaux</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.52)">Une audience louée sur une plateforme n'est pas un actif de l'entreprise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLUTIONS -->
+    <div style="padding:{{ secPad }};background:#050505;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:20px">02 — NOS SOLUTIONS</div>
+        <h2 style="margin:0 0 16px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Quatre familles. Un système.</h2>
+        <p style="margin:0 0 48px;font-size:17px;color:rgba(255,255,255,0.5);max-width:620px">Nous partons d'un problème business, pas d'une liste de prestations.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ families }}" as="f" hint-placeholder-count="4">
+            <div onClick="{{ goSolutions }}" style="background:#000;padding:34px 28px;cursor:pointer;display:flex;flex-direction:column;gap:14px" style-hover="background:#0a0a14">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.34)">{{ f.tag }}</div>
+              <div style="font-size:22px;font-weight:600;letter-spacing:-0.01em">{{ f.title }}</div>
+              <div style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.5)">{{ f.summary }}</div>
+              <div style="margin-top:6px;font-size:13.5px;line-height:1.5;color:#6b6bff">{{ f.outcome }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉTHODE -->
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:20px">03 — RIXZA METHOD</div>
+        <h2 style="margin:0 0 16px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Sept étapes, du diagnostic à l'échelle.</h2>
+        <p style="margin:0 0 48px;font-size:17px;color:rgba(255,255,255,0.5);max-width:620px">Découvrir, diagnostiquer, concevoir, construire, lancer, développer, passer à l'échelle.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ method }}" as="m" hint-placeholder-count="7">
+            <div style="background:#000;padding:30px 24px 36px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:26px;color:#0000FF;margin-bottom:22px">{{ m.n }}</div>
+              <div style="font-size:18px;font-weight:600;margin-bottom:9px">{{ m.title }}</div>
+              <div style="font-size:13.5px;line-height:1.55;color:rgba(255,255,255,0.5)">{{ m.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- RÉALISATIONS -->
+    <div style="padding:{{ secPad }};background:#050505;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:20px">04 — RÉALISATIONS</div>
+        <h2 style="margin:0 0 44px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Des systèmes en production depuis 2022.</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+          <sc-for list="{{ casesShort }}" as="c" hint-placeholder-count="3">
+            <div onClick="{{ goWork }}" style="border:1px solid rgba(255,255,255,0.12);background:#000;cursor:pointer" style-hover="border-color:#0000FF">
+              <div style="height:170px;overflow:hidden;background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,0.1)">
+                <img src="{{ c.img }}" alt="{{ c.client }}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block" />
+              </div>
+              <div style="padding:28px 26px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.4);margin-bottom:12px">{{ c.sector }}</div>
+                <div style="font-size:21px;font-weight:600;margin-bottom:12px;letter-spacing:-0.01em">{{ c.client }}</div>
+                <div style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.52);margin-bottom:20px">{{ c.line }}</div>
+                <div style="display:flex;gap:24px;border-top:1px solid rgba(255,255,255,0.12);padding-top:18px">
+                  <div><div style="font-size:24px;font-weight:600;color:#6b6bff">{{ c.k1v }}</div><div style="font-size:11.5px;color:rgba(255,255,255,0.4)">{{ c.k1l }}</div></div>
+                  <div><div style="font-size:24px;font-weight:600;color:#6b6bff">{{ c.k2v }}</div><div style="font-size:11.5px;color:rgba(255,255,255,0.4)">{{ c.k2l }}</div></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALEUR AJOUTÉE -->
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:52px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:20px">05 — NOTRE VALEUR AJOUTÉE</div>
+          <h2 style="margin:0 0 20px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">La technologie au service du problème business.</h2>
+          <p style="margin:0;font-size:17px;line-height:1.55;color:rgba(255,255,255,0.52);max-width:440px">Nous ne vendons pas la technologie comme une finalité. Nous l'utilisons pour créer une utilité concrète.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <div style="background:#000;padding:28px 24px"><div style="font-size:18px;font-weight:600;margin-bottom:9px">Au-delà des sites</div><div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">De la présence digitale au CRM, à l'automatisation, à l'IA et aux logiciels sur mesure.</div></div>
+          <div style="background:#000;padding:28px 24px"><div style="font-size:18px;font-weight:600;margin-bottom:9px">Design + dev + croissance</div><div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">Une seule équipe entre la création, la technologie et l'exécution commerciale.</div></div>
+          <div style="background:#000;padding:28px 24px"><div style="font-size:18px;font-weight:600;margin-bottom:9px">Évolution à long terme</div><div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">Les solutions sont maintenues, optimisées et étendues — pas abandonnées après le lancement.</div></div>
+          <div style="background:#000;padding:28px 24px"><div style="font-size:18px;font-weight:600;margin-bottom:9px">Marché africain</div><div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">Construite depuis Douala, pour des problèmes concrets d'entreprises africaines.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA FINAL -->
+    <div style="padding:{{ ctaPad }};background:radial-gradient(90% 120% at 50% 0%, rgba(0,0,255,0.2) 0%, rgba(0,0,0,0) 62%)">
+      <div style="max-width:900px;margin:0 auto;text-align:center">
+        <h2 style="margin:0 0 22px;font-size:{{ ctaSize }};line-height:1.04;letter-spacing:-0.035em;font-weight:600">Construisons votre prochaine solution digitale.</h2>
+        <p style="margin:0 auto 36px;font-size:18px;line-height:1.55;color:rgba(255,255,255,0.55);max-width:540px">Commencez par l'audit gratuit, ou parlons directement de votre situation.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <div onClick="{{ goAudit }}" style="cursor:pointer;padding:18px 32px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Audit Digital Growth gratuit</div>
+          <div onClick="{{ goContact }}" style="cursor:pointer;padding:18px 32px;border:1px solid rgba(255,255,255,0.25);font-size:15px;font-weight:500" style-hover="border-color:#fff">Parler à RIXZA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ AUDIT ============ -->
+  <sc-if value="{{ isAudit }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:70vh;padding:{{ pagePad }};background:radial-gradient(100% 70% at 50% 0%, rgba(0,0,255,0.14) 0%, rgba(0,0,0,0) 60%)">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:36px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.4)">
+        <span style="color:#6b6bff">AUDIT DIGITAL GROWTH</span><span>/</span><span>{{ stepLabel }}</span>
+      </div>
+
+      <sc-if value="{{ showInput }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+        <div>
+          <h1 style="margin:0 0 20px;font-size:{{ h1Size2 }};line-height:1.04;letter-spacing:-0.035em;font-weight:600">Voyez ce que votre présence digitale vous coûte réellement.</h1>
+          <p style="margin:0 0 30px;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.55)">Un diagnostic en 60 secondes sur six dimensions — performance, visibilité, conversion, crédibilité, expérience et infrastructure de croissance. Vous obtenez le score, les écarts et les trois priorités.</p>
+          <div style="display:flex;flex-direction:column;gap:13px">
+            <div style="display:flex;gap:12px;align-items:baseline"><span style="color:#6b6bff;font-family:'JetBrains Mono',monospace;font-size:11px">01</span><span style="font-size:14.5px;color:rgba(255,255,255,0.6)">Entrez votre site — aucun e-mail requis pour démarrer.</span></div>
+            <div style="display:flex;gap:12px;align-items:baseline"><span style="color:#6b6bff;font-family:'JetBrains Mono',monospace;font-size:11px">02</span><span style="font-size:14.5px;color:rgba(255,255,255,0.6)">Analyse technique, contenu et conversion.</span></div>
+            <div style="display:flex;gap:12px;align-items:baseline"><span style="color:#6b6bff;font-family:'JetBrains Mono',monospace;font-size:11px">03</span><span style="font-size:14.5px;color:rgba(255,255,255,0.6)">Rapport scoré et opportunités priorisées.</span></div>
+          </div>
+        </div>
+        <div style="background:#050505;border:1px solid rgba(255,255,255,0.14);padding:32px 30px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:24px">DÉMARRER L'AUDIT</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.5);margin-bottom:8px">Site web</div>
+              <input value="{{ url }}" onChange="{{ setUrl }}" placeholder="votreentreprise.com" style="width:100%;padding:15px 16px;background:#000;border:1px solid {{ urlBorder }};color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
+              <sc-if value="{{ showUrlError }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:8px;font-size:12.5px;color:#ff6b6b">{{ urlError }}</div>
+              </sc-if>
+            </div>
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.5);margin-bottom:8px">Entreprise</div>
+              <input value="{{ company }}" onChange="{{ setCompany }}" placeholder="Nom de l'entreprise" style="width:100%;padding:15px 16px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
+            </div>
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.5);margin-bottom:8px">Secteur <span style="color:rgba(255,255,255,0.3)">(optionnel)</span></div>
+              <select value="{{ industry }}" onChange="{{ setIndustry }}" style="width:100%;padding:15px 16px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:15px;outline:none">
+                <option value="">Sélectionner</option>
+                <option value="Immobilier">Immobilier</option>
+                <option value="Santé">Santé &amp; bien-être</option>
+                <option value="Événementiel">Événementiel</option>
+                <option value="Services professionnels">Services professionnels</option>
+                <option value="Commerce">Commerce &amp; e-commerce</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div onClick="{{ startScan }}" style="cursor:pointer;margin-top:4px;text-align:center;padding:17px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Lancer l'audit gratuit</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;color:rgba(255,255,255,0.32);text-align:center">GRATUIT • 60 SECONDES • SANS ENGAGEMENT</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showScanning }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:760px;margin:0 auto;text-align:center;padding:32px 0">
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:12px">Analyse en cours</div>
+        <div style="font-size:{{ scanSize }};font-weight:600;letter-spacing:-0.02em;margin-bottom:40px;word-break:break-all">{{ displayUrl }}</div>
+        <div style="height:2px;background:rgba(255,255,255,0.1);margin-bottom:14px">
+          <div style="height:2px;background:#0000FF;width:{{ progressPct }}"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:40px;text-align:left">
+          <span>{{ currentCheck }}</span><span>{{ progressPct }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;text-align:left;border:1px solid rgba(255,255,255,0.12);background:#050505;padding:24px">
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="8">
+            <div style="display:flex;align-items:baseline;gap:14px;font-family:'JetBrains Mono',monospace;font-size:12px">
+              <span style="color:{{ c.color }};flex:0 0 14px">{{ c.icon }}</span>
+              <span style="color:{{ c.textColor }}">{{ c.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showError }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:620px;margin:0 auto;text-align:center;padding:48px 0">
+        <div style="width:56px;height:56px;margin:0 auto 24px;border-radius:50%;border:1px solid rgba(255,107,107,0.5);display:flex;align-items:center;justify-content:center;color:#ff6b6b;font-size:26px">!</div>
+        <h2 style="margin:0 0 14px;font-size:26px;font-weight:600;letter-spacing:-0.02em">Analyse impossible</h2>
+        <p style="margin:0 0 28px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.6)">{{ scanErrorMsg }}</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <div onClick="{{ retryScan }}" style="cursor:pointer;padding:16px 28px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Réessayer</div>
+          <div onClick="{{ goContact }}" style="cursor:pointer;padding:16px 28px;border:1px solid rgba(255,255,255,0.25);font-size:15px;font-weight:500" style-hover="border-color:#fff">Parler à RIXZA</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showTeaser }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:44px;align-items:center">
+        <div style="background:#050505;border:1px solid rgba(255,255,255,0.14);padding:36px;text-align:center">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:22px">VOTRE SCORE RIXZA</div>
+          <div style="width:186px;height:186px;margin:0 auto 22px;border-radius:50%;background:{{ scoreRing }};display:flex;align-items:center;justify-content:center">
+            <div style="width:158px;height:158px;border-radius:50%;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div style="font-size:56px;font-weight:600;letter-spacing:-0.04em;line-height:1">{{ score }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:rgba(255,255,255,0.42)">/100</div>
+            </div>
+          </div>
+          <div style="font-size:23px;font-weight:600;margin-bottom:8px">{{ levelName }}</div>
+          <div style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.5);max-width:320px;margin:0 auto">{{ levelBlurb }}</div>
+        </div>
+        <div>
+          <h2 style="margin:0 0 16px;font-size:{{ h2Size }};line-height:1.1;letter-spacing:-0.03em;font-weight:600">Débloquez le rapport complet</h2>
+          <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.55)">Les six scores détaillés, vos trois priorités, les constats techniques et les actions recommandées pour {{ displayUrl }}.</p>
+          <div style="display:flex;flex-direction:column;gap:13px;max-width:420px">
+            <input value="{{ name }}" onChange="{{ setName }}" placeholder="Nom complet" style="width:100%;padding:15px 16px;background:#050505;border:1px solid {{ leadBorder }};color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
+            <input value="{{ email }}" onChange="{{ setEmail }}" placeholder="E-mail professionnel" style="width:100%;padding:15px 16px;background:#050505;border:1px solid {{ leadBorder }};color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
+            <sc-if value="{{ showFormError }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12.5px;color:#ff6b6b">{{ formError }}</div>
+            </sc-if>
+            <div onClick="{{ unlock }}" style="cursor:pointer;text-align:center;padding:17px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">{{ unlockLabel }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;color:rgba(255,255,255,0.32)">AUCUN SPAM • RAPPORT IMMÉDIAT</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showReport }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,0.14);background:#050505;padding:34px;margin-bottom:24px">
+          <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap">
+            <div style="width:142px;height:142px;border-radius:50%;background:{{ scoreRing }};display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+              <div style="width:120px;height:120px;border-radius:50%;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div style="font-size:44px;font-weight:600;letter-spacing:-0.04em;line-height:1">{{ score }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.42)">/100</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:10px">RAPPORT POUR {{ displayUrl }}</div>
+              <div style="font-size:28px;font-weight:600;letter-spacing:-0.02em;margin-bottom:8px">{{ levelName }}</div>
+              <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.55);max-width:420px">{{ levelBlurb }}</div>
+            </div>
+          </div>
+          <div onClick="{{ goContact }}" style="cursor:pointer;padding:17px 26px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Discuter des résultats</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px;margin-bottom:24px">
+          <div style="border:1px solid rgba(255,255,255,0.14);background:#050505;padding:32px 28px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:24px">SIX DIMENSIONS</div>
+            <div style="display:flex;flex-direction:column;gap:19px">
+              <sc-for list="{{ dims }}" as="d" hint-placeholder-count="6">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:9px">
+                    <span style="font-size:15px;font-weight:500">{{ d.label }}</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5)">{{ d.weightLabel }} · <span style="color:#fff">{{ d.score }}</span></span>
+                  </div>
+                  <div style="height:5px;background:rgba(255,255,255,0.09)">
+                    <div style="height:5px;background:{{ d.barColor }};width:{{ d.pct }}"></div>
+                  </div>
+                  <div style="margin-top:9px;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.45)">{{ d.note }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:24px">
+            <div style="border:1px solid rgba(255,255,255,0.14);background:#050505;padding:32px 28px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#6b6bff;margin-bottom:24px">VOS TROIS PRIORITÉS</div>
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <sc-for list="{{ opportunities }}" as="o" hint-placeholder-count="3">
+                  <div style="display:flex;gap:15px">
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b6bff;flex:0 0 22px;padding-top:3px">{{ o.rank }}</div>
+                    <div>
+                      <div style="font-size:16.5px;font-weight:600;margin-bottom:7px">{{ o.title }}</div>
+                      <div style="font-size:13.5px;line-height:1.55;color:rgba(255,255,255,0.5)">{{ o.body }}</div>
+                      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.35)">IMPACT {{ o.impact }} · EFFORT {{ o.effort }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="border:1px solid rgba(255,255,255,0.14);background:#050505;padding:32px 28px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:20px">CONSTATS TECHNIQUES</div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ findings }}" as="f" hint-placeholder-count="7">
+                  <div style="display:flex;gap:14px;align-items:baseline;font-size:13.5px">
+                    <span style="color:{{ f.color }};font-family:'JetBrains Mono',monospace;font-size:11px;flex:0 0 46px">{{ f.state }}</span>
+                    <span style="color:rgba(255,255,255,0.62)">{{ f.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ showVisual }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid rgba(255,255,255,0.14);background:#050505;padding:32px 28px;margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#6b6bff">ANALYSE VISUELLE</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.35)">IA · CAPTURE D'ÉCRAN</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:13px">
+            <sc-for list="{{ visualNotes }}" as="v" hint-placeholder-count="5">
+              <div style="display:flex;gap:14px;align-items:baseline;font-size:14px;line-height:1.5">
+                <span style="color:{{ v.color }};font-family:'JetBrains Mono',monospace;font-size:11px;flex:0 0 64px">{{ v.tag }}</span>
+                <span style="color:rgba(255,255,255,0.7)">{{ v.t }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <div style="border:1px solid rgba(255,255,255,0.14);background:#050505;padding:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:36px">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:20px">CE QUE COUVRE LA SESSION DE DIAGNOSTIC</div>
+            <div style="display:flex;flex-direction:column;gap:11px;font-size:14.5px;color:rgba(255,255,255,0.55)">
+              <div>— Feuille de route 30 / 60 / 90 jours</div>
+              <div>— Analyse concurrentielle détaillée</div>
+              <div>— Opportunités SEO et mots-clés</div>
+              <div>— Architecture de conversion</div>
+              <div>— Périmètre, planning et investissement</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:center;gap:13px">
+            <div style="font-size:25px;font-weight:600;letter-spacing:-0.02em;line-height:1.15">Transformons ce constat en plan.</div>
+            <div style="font-size:15px;line-height:1.55;color:rgba(255,255,255,0.5)">45 minutes avec la personne qui pilotera le projet.</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px">
+              <div onClick="{{ goContact }}" style="cursor:pointer;padding:16px 24px;background:#0000FF;font-size:14.5px;font-weight:600" style-hover="background:#2a2aff">Réserver un échange</div>
+              <div onClick="{{ copyReportLink }}" style="cursor:pointer;padding:16px 24px;border:1px solid rgba(255,255,255,0.25);font-size:14.5px;font-weight:500" style-hover="border-color:#fff">{{ copyLinkLabel }}</div>
+              <div onClick="{{ resetAudit }}" style="cursor:pointer;padding:16px 24px;border:1px solid rgba(255,255,255,0.25);font-size:14.5px;font-weight:500" style-hover="border-color:#fff">Nouvel audit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ SOLUTIONS ============ -->
+  <sc-if value="{{ isSolutions }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <div style="padding:{{ heroPad }};border-bottom:1px solid rgba(255,255,255,0.08);background:radial-gradient(110% 80% at 78% 6%, rgba(0,0,255,0.16) 0%, rgba(0,0,0,0) 60%)">
+      <div style="max-width:1080px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:24px">SOLUTIONS</div>
+        <h1 style="margin:0 0 22px;font-size:{{ h1Size2 }};line-height:1.04;letter-spacing:-0.035em;font-weight:600;max-width:900px">De la présence digitale au logiciel sur mesure.</h1>
+        <p style="margin:0 0 34px;font-size:{{ leadSize }};line-height:1.55;color:rgba(255,255,255,0.58);max-width:620px">Quatre familles d'intervention, combinables selon le niveau de maturité digitale de votre entreprise.</p>
+        <div onClick="{{ goAudit }}" style="display:inline-block;cursor:pointer;padding:17px 28px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Commencer par l'audit gratuit</div>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+        <sc-for list="{{ families }}" as="f" hint-placeholder-count="4">
+          <div style="background:#000;padding:{{ famPad }};display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b6bff;margin-bottom:16px">{{ f.tag }}</div>
+              <div style="font-size:30px;font-weight:600;letter-spacing:-0.02em;margin-bottom:14px">{{ f.title }}</div>
+              <div style="font-size:15.5px;line-height:1.6;color:rgba(255,255,255,0.55);max-width:420px">{{ f.long }}</div>
+              <div style="margin-top:18px;font-size:14.5px;line-height:1.55;color:#6b6bff">{{ f.outcome }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.38);margin-bottom:6px">CE QUE ÇA INCLUT</div>
+              <sc-for list="{{ f.items }}" as="i" hint-placeholder-count="6">
+                <div style="display:flex;gap:12px;align-items:baseline;font-size:14.5px;color:rgba(255,255,255,0.62)"><span style="color:#0000FF">—</span><span>{{ i }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};background:#050505;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto">
+        <h2 style="margin:0 0 14px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Investissement</h2>
+        <p style="margin:0 0 36px;font-size:16.5px;color:rgba(255,255,255,0.5);max-width:600px">Fourchettes indicatives. Le prix final dépend du périmètre, de la complexité et du niveau d'accompagnement.</p>
+        <div style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ pricing }}" as="p" hint-placeholder-count="7">
+            <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:baseline;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);background:#000">
+              <div style="flex:1 1 200px">
+                <div style="font-size:16.5px;font-weight:600;margin-bottom:5px">{{ p.name }}</div>
+                <div style="font-size:13.5px;color:rgba(255,255,255,0.45)">{{ p.role }}</div>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#6b6bff;text-align:right">{{ p.range }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:rgba(255,255,255,0.3)">FOURCHETTES À VALIDER AVANT PUBLICATION</div>
+      </div>
+    </div>
+
+    <div style="padding:{{ ctaPad }};background:radial-gradient(90% 120% at 50% 0%, rgba(0,0,255,0.18) 0%, rgba(0,0,0,0) 62%)">
+      <div style="max-width:820px;margin:0 auto;text-align:center">
+        <h2 style="margin:0 0 20px;font-size:{{ ctaSize }};line-height:1.06;letter-spacing:-0.03em;font-weight:600">Commencez par le diagnostic.</h2>
+        <p style="margin:0 auto 32px;font-size:17px;color:rgba(255,255,255,0.55);max-width:520px">L'audit nous donne une base commune avant le premier échange.</p>
+        <div onClick="{{ goAudit }}" style="display:inline-block;cursor:pointer;padding:18px 32px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Audit Digital Growth gratuit</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ MÉTHODE ============ -->
+  <sc-if value="{{ isMethod }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <div style="padding:{{ heroPad }};border-bottom:1px solid rgba(255,255,255,0.08);background:radial-gradient(110% 80% at 20% 6%, rgba(0,0,255,0.16) 0%, rgba(0,0,0,0) 60%)">
+      <div style="max-width:1080px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:24px">RIXZA METHOD</div>
+        <h1 style="margin:0 0 22px;font-size:{{ h1Size2 }};line-height:1.04;letter-spacing:-0.035em;font-weight:600;max-width:880px">Nous commençons par un problème business, pas par la technologie.</h1>
+        <p style="margin:0;font-size:{{ leadSize }};line-height:1.55;color:rgba(255,255,255,0.58);max-width:620px">Sept étapes, du diagnostic au passage à l'échelle — avec un livrable et une décision à chaque étape.</p>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto;display:flex;flex-direction:column">
+        <sc-for list="{{ method }}" as="m" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;padding:30px 0;border-top:1px solid rgba(255,255,255,0.12)">
+            <div style="display:flex;gap:20px;align-items:baseline">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:#0000FF;flex:0 0 auto">{{ m.n }}</div>
+              <div style="font-size:26px;font-weight:600;letter-spacing:-0.02em">{{ m.title }}</div>
+            </div>
+            <div style="font-size:15.5px;line-height:1.6;color:rgba(255,255,255,0.55)">{{ m.body }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};background:#050505;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto">
+        <h2 style="margin:0 0 14px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">L'expérience client</h2>
+        <p style="margin:0 0 40px;font-size:16.5px;color:rgba(255,255,255,0.5);max-width:600px">Du diagnostic à l'étude de cas, sept jalons clairs.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ journey }}" as="j" hint-placeholder-count="7">
+            <div style="background:#000;padding:26px 22px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.34);margin-bottom:16px">{{ j.n }}</div>
+              <div style="font-size:15.5px;line-height:1.5;color:rgba(255,255,255,0.75)">{{ j.t }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:{{ ctaPad }};background:radial-gradient(90% 120% at 50% 0%, rgba(0,0,255,0.18) 0%, rgba(0,0,0,0) 62%)">
+      <div style="max-width:820px;margin:0 auto;text-align:center">
+        <h2 style="margin:0 0 20px;font-size:{{ ctaSize }};line-height:1.06;letter-spacing:-0.03em;font-weight:600">Étape 02 : le diagnostic.</h2>
+        <p style="margin:0 auto 32px;font-size:17px;color:rgba(255,255,255,0.55);max-width:520px">Il commence par l'audit gratuit — 60 secondes, six dimensions.</p>
+        <div onClick="{{ goAudit }}" style="display:inline-block;cursor:pointer;padding:18px 32px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Lancer l'audit</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ RÉALISATIONS ============ -->
+  <sc-if value="{{ isWork }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <div style="padding:{{ heroPad }};border-bottom:1px solid rgba(255,255,255,0.08);background:radial-gradient(110% 80% at 78% 6%, rgba(0,0,255,0.16) 0%, rgba(0,0,0,0) 60%)">
+      <div style="max-width:1080px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:24px">RÉALISATIONS</div>
+        <h1 style="margin:0 0 22px;font-size:{{ h1Size2 }};line-height:1.04;letter-spacing:-0.035em;font-weight:600;max-width:880px">Problème, stratégie, exécution, résultat.</h1>
+        <p style="margin:0;font-size:{{ leadSize }};line-height:1.55;color:rgba(255,255,255,0.58);max-width:620px">Des projets menés au Cameroun et à l'international depuis 2022.</p>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }}">
+      <div style="max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ cases }}" as="c" hint-placeholder-count="4">
+          <div style="border:1px solid rgba(255,255,255,0.12);background:#050505">
+            <sc-if value="{{ c.hasImg }}" hint-placeholder-val="{{ true }}">
+            <div style="height:{{ caseImgH }};overflow:hidden;background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,0.1)">
+              <img src="{{ c.img }}" alt="{{ c.client }}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block" />
+            </div>
+            </sc-if>
+            <sc-if value="{{ c.noImg }}" hint-placeholder-val="{{ false }}">
+            <div style="height:180px;background:linear-gradient(135deg,rgba(0,0,255,0.22) 0%,rgba(0,0,0,0) 70%),#0a0a0a;display:flex;align-items:flex-end;padding:22px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.4)">VISUEL PROJET — À FOURNIR</div>
+            </div>
+            </sc-if>
+            <div style="padding:{{ casePad }}">
+              <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:baseline;margin-bottom:22px">
+                <div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.4);margin-bottom:10px">{{ c.sector }}</div>
+                  <div style="font-size:30px;font-weight:600;letter-spacing:-0.02em">{{ c.client }}</div>
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:rgba(255,255,255,0.35)">{{ c.stack }}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px;margin-bottom:26px">
+                <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.38);margin-bottom:9px">PROBLÈME</div><div style="font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.6)">{{ c.problem }}</div></div>
+                <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.38);margin-bottom:9px">STRATÉGIE</div><div style="font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.6)">{{ c.strategy }}</div></div>
+                <div><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#6b6bff;margin-bottom:9px">RÉSULTAT</div><div style="font-size:14.5px;line-height:1.6;color:rgba(255,255,255,0.85)">{{ c.result }}</div></div>
+              </div>
+              <sc-if value="{{ c.hasKpis }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:40px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.12);padding-top:22px">
+                <sc-for list="{{ c.kpis }}" as="k" hint-placeholder-count="3">
+                  <div><div style="font-size:28px;font-weight:600;color:#6b6bff;letter-spacing:-0.02em">{{ k.v }}</div><div style="font-size:12.5px;color:rgba(255,255,255,0.42);margin-top:4px">{{ k.l }}</div></div>
+                </sc-for>
+              </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="padding:{{ ctaPad }};background:radial-gradient(90% 120% at 50% 0%, rgba(0,0,255,0.18) 0%, rgba(0,0,0,0) 62%)">
+      <div style="max-width:820px;margin:0 auto;text-align:center">
+        <h2 style="margin:0 0 20px;font-size:{{ ctaSize }};line-height:1.06;letter-spacing:-0.03em;font-weight:600">Votre projet, la prochaine étude de cas.</h2>
+        <div onClick="{{ goContact }}" style="display:inline-block;cursor:pointer;padding:18px 32px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Parler à RIXZA</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ ENTREPRISE ============ -->
+  <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <div style="padding:{{ heroPad }};border-bottom:1px solid rgba(255,255,255,0.08);background:radial-gradient(110% 80% at 20% 6%, rgba(0,0,255,0.16) 0%, rgba(0,0,0,0) 60%)">
+      <div style="max-width:1080px;margin:0 auto">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:24px">ENTREPRISE</div>
+        <h1 style="margin:0 0 22px;font-size:{{ h1Size2 }};line-height:1.04;letter-spacing:-0.035em;font-weight:600;max-width:880px">Une entreprise technologique africaine, construite depuis Douala.</h1>
+        <p style="margin:0;font-size:{{ leadSize }};line-height:1.55;color:rgba(255,255,255,0.58);max-width:640px">Fondée en 2022, RIXZA aide les entreprises sérieuses à faire correspondre leur présence digitale à leur véritable valeur.</p>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:52px">
+        <div>
+          <h2 style="margin:0 0 18px;font-size:{{ h2Size }};line-height:1.1;letter-spacing:-0.03em;font-weight:600">Le X RIXZA</h2>
+          <p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.55)">Convergence. Transformation. Élan.</p>
+          <p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.55)">Le X représente le point où la stratégie, la technologie et l'exécution convergent pour créer un avantage. Ses lignes ascendantes expriment l'ambition ; sa construction fragmentée évoque la transformation d'éléments distincts en un système cohérent.</p>
+          <p style="margin:0;font-size:16px;line-height:1.6;color:#fff">Et parce que le X signifie aussi multiplication : transformer le potentiel en performance.</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.12);background:#050505;overflow:hidden;position:relative;min-height:260px">
+          <iframe src="RIXZA%20Convergence.dc.html" title="RIXZA — Convergence" loading="lazy" scrolling="no" style="display:block;width:100%;aspect-ratio:16/9;border:0"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};background:#050505;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto">
+        <h2 style="margin:0 0 40px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Nos valeurs</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ values }}" as="v" hint-placeholder-count="6">
+            <div style="background:#000;padding:28px 24px">
+              <div style="font-size:19px;font-weight:600;margin-bottom:10px">{{ v.t }}</div>
+              <div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">{{ v.b }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:{{ secPad }};border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div style="max-width:1080px;margin:0 auto">
+        <h2 style="margin:0 0 14px;font-size:{{ h2Size }};line-height:1.08;letter-spacing:-0.03em;font-weight:600">Notre trajectoire</h2>
+        <p style="margin:0 0 40px;font-size:16.5px;color:rgba(255,255,255,0.5);max-width:600px">Des services comme point d'entrée, la technologie comme capacité, les produits comme mécanisme d'échelle.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.12)">
+          <sc-for list="{{ roadmap }}" as="r" hint-placeholder-count="4">
+            <div style="background:#000;padding:30px 24px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#0000FF;margin-bottom:18px">{{ r.year }}</div>
+              <div style="font-size:18px;font-weight:600;margin-bottom:10px">{{ r.title }}</div>
+              <div style="font-size:14px;line-height:1.55;color:rgba(255,255,255,0.5)">{{ r.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:{{ ctaPad }};background:radial-gradient(90% 120% at 50% 0%, rgba(0,0,255,0.18) 0%, rgba(0,0,0,0) 62%)">
+      <div style="max-width:820px;margin:0 auto;text-align:center">
+        <h2 style="margin:0 0 20px;font-size:{{ ctaSize }};line-height:1.06;letter-spacing:-0.03em;font-weight:600">Construisons votre prochaine solution digitale.</h2>
+        <div onClick="{{ goContact }}" style="display:inline-block;cursor:pointer;padding:18px 32px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">Parler à RIXZA</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ CONTACT ============ -->
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:{{ pagePad }}">
+    <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#6b6bff;margin-bottom:24px">CONTACT</div>
+        <h1 style="margin:0 0 20px;font-size:{{ h1Size2 }};line-height:1.06;letter-spacing:-0.035em;font-weight:600">Parlons du système que vous voulez construire.</h1>
+        <p style="margin:0 0 30px;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.55);max-width:460px">Un échange de 45 minutes. Vous repartez avec un point de vue sur votre situation digitale, que nous travaillions ensemble ou non.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:15.5px;color:rgba(255,255,255,0.62)">
+          <div>Douala, Cameroun</div>
+          <div>+237 699 617 906</div>
+          <div style="font-size:14px;color:rgba(255,255,255,0.4)">Réponse sous un jour ouvré</div>
+        </div>
+      </div>
+      <sc-if value="{{ showContactForm }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#050505;border:1px solid rgba(255,255,255,0.14);padding:32px 30px;display:flex;flex-direction:column;gap:15px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px">
+          <input value="{{ cName }}" onChange="{{ setCName }}" placeholder="Nom" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#0000FF" />
+          <input value="{{ cCompany }}" onChange="{{ setCCompany }}" placeholder="Entreprise" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#0000FF" />
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px">
+          <input value="{{ cEmail }}" onChange="{{ setCEmail }}" placeholder="E-mail" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#0000FF" />
+          <input value="{{ cPhone }}" onChange="{{ setCPhone }}" placeholder="WhatsApp" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#0000FF" />
+        </div>
+        <input value="{{ cWebsite }}" onChange="{{ setCWebsite }}" placeholder="Site web (si existant)" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#0000FF" />
+        <select value="{{ cNeed }}" onChange="{{ setCNeed }}" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none">
+          <option value="">Besoin principal</option><option>Fondation Digitale</option><option>Système de Croissance</option><option>Opérations Digitales</option><option>Technologie sur mesure</option><option>Je ne sais pas encore</option>
+        </select>
+        <textarea value="{{ cMessage }}" onChange="{{ setCMessage }}" placeholder="Votre situation et le résultat attendu" rows="4" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none;resize:vertical;font-family:'Space Grotesk',sans-serif" style-focus="border-color:#0000FF"></textarea>
+        <select value="{{ cTimeline }}" onChange="{{ setCTimeline }}" style="width:100%;padding:14px 15px;background:#000;border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:14.5px;outline:none">
+          <option value="">Échéance</option><option>Immédiate</option><option>1 à 3 mois</option><option>3 à 6 mois</option><option>Exploration</option>
+        </select>
+        <sc-if value="{{ showContactError }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12.5px;color:#ff6b6b">{{ cError }}</div>
+        </sc-if>
+        <div onClick="{{ submitContact }}" style="cursor:pointer;text-align:center;padding:17px;background:#0000FF;font-size:15px;font-weight:600" style-hover="background:#2a2aff">{{ contactBtnLabel }}</div>
+        <sc-if value="{{ showContactWa }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ openContactWa }}" style="cursor:pointer;text-align:center;padding:15px;border:1px solid #25D366;color:#25D366;font-size:14.5px;font-weight:600" style-hover="background:rgba(37,211,102,0.1)">Continuer sur WhatsApp →</div>
+        <div style="font-size:11.5px;color:rgba(255,255,255,0.4);text-align:center">Vos réponses sont pré-remplies dans le message.</div>
+        </sc-if>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;color:rgba(255,255,255,0.32);text-align:center">RÉPONSE SOUS UN JOUR OUVRÉ</div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ contactSent }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#050505;border:1px solid rgba(0,0,255,0.4);padding:44px 34px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
+        <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(107,107,255,0.6);display:flex;align-items:center;justify-content:center;color:#6b6bff;font-size:24px">✓</div>
+        <div style="font-size:22px;font-weight:600;letter-spacing:-0.02em">Demande reçue.</div>
+        <div style="font-size:15px;line-height:1.6;color:rgba(255,255,255,0.55);max-width:340px">Merci — nous revenons vers vous sous un jour ouvré pour convenir de l'échange.</div>
+        <div onClick="{{ goAudit }}" style="margin-top:6px;cursor:pointer;padding:14px 24px;border:1px solid rgba(255,255,255,0.25);font-size:14px;font-weight:500" style-hover="border-color:#fff">Lancer l'audit en attendant</div>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- FOOTER -->
+  <div style="border-top:1px solid rgba(255,255,255,0.1);padding:{{ footPad }};background:#000">
+    <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;margin-bottom:44px">
+      <div>
+        <div style="overflow:hidden;width:196px;height:44px;position:relative">
+          <img src="assets/rixza-lockup-white.png" alt="RIXZA" style="position:absolute;left:-52px;top:-72px;width:307px;height:auto;max-width:none;display:block" />
+        </div>
+        <div style="margin-top:12px;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.42);max-width:260px">Nous construisons l'infrastructure digitale qui accompagne la croissance des entreprises.</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.35);margin-bottom:16px">SOLUTIONS</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:rgba(255,255,255,0.55)">
+          <div onClick="{{ goSolutions }}" style="cursor:pointer" style-hover="color:#fff">Fondation Digitale</div>
+          <div onClick="{{ goSolutions }}" style="cursor:pointer" style-hover="color:#fff">Systèmes de Croissance</div>
+          <div onClick="{{ goSolutions }}" style="cursor:pointer" style-hover="color:#fff">Opérations Digitales</div>
+          <div onClick="{{ goSolutions }}" style="cursor:pointer" style-hover="color:#fff">Technologie sur mesure</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.35);margin-bottom:16px">ENTREPRISE</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:rgba(255,255,255,0.55)">
+          <div onClick="{{ goMethod }}" style="cursor:pointer" style-hover="color:#fff">RIXZA Method</div>
+          <div onClick="{{ goWork }}" style="cursor:pointer" style-hover="color:#fff">Réalisations</div>
+          <div onClick="{{ goAbout }}" style="cursor:pointer" style-hover="color:#fff">À propos</div>
+          <div onClick="{{ goAudit }}" style="cursor:pointer" style-hover="color:#fff">Audit gratuit</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.35);margin-bottom:16px">CONTACT</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:rgba(255,255,255,0.55)">
+          <div>Douala, Cameroun</div>
+          <div>+237 699 617 906</div>
+          <div onClick="{{ goContact }}" style="cursor:pointer;color:#6b6bff" style-hover="color:#fff">Demander un échange</div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding-top:22px;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.3)">
+      <div>© 2026 RIXZA. TOUS DROITS RÉSERVÉS.</div>
+      <div>DÉCOUVRIR · DIAGNOSTIQUER · CONCEVOIR · CONSTRUIRE · LANCER · DÉVELOPPER · ÉCHELLE</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+  <div style="position:sticky;bottom:0;z-index:50;display:flex;border-top:1px solid rgba(255,255,255,0.14);background:rgba(0,0,0,0.92);backdrop-filter:blur(12px)">
+    <div onClick="{{ goAudit }}" style="flex:1;text-align:center;padding:16px;background:#0000FF;font-size:14px;font-weight:600;cursor:pointer">Audit gratuit</div>
+    <div onClick="{{ goContact }}" style="flex:1;text-align:center;padding:16px;font-size:14px;font-weight:500;cursor:pointer">Nous écrire</div>
+  </div>
+  </sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#0000FF&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#0000FF&quot;,&quot;#2A2AFF&quot;,&quot;#0B5CFF&quot;,&quot;#4B00FF&quot;]},&quot;scanSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:3,&quot;step&quot;:0.2,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Audit&quot;}}">
+const DIMS = [
+  { key: 'performance', label: 'Performance', weight: 15, note: 'Vitesse, Core Web Vitals, HTTPS et poids des pages.' },
+  { key: 'seo', label: 'Visibilité SEO', weight: 20, note: 'Balises, structure, indexation et architecture de contenu.' },
+  { key: 'conversion', label: 'Conversion', weight: 25, note: 'Appels à l\u2019action, formulaires, prise de rendez-vous et WhatsApp.' },
+  { key: 'authority', label: 'Crédibilité', weight: 15, note: 'Clarté du positionnement, preuves et différenciation.' },
+  { key: 'ux', label: 'Expérience', weight: 15, note: 'Navigation, hiérarchie, mobile et accessibilité de base.' },
+  { key: 'growth', label: 'Infrastructure de croissance', weight: 10, note: 'Analytics, CRM, automatisation et suivi des prospects.' }
+];
+
+const CHECK_LABELS = [
+  'Chargement de la page et suivi des redirections',
+  'Mesure des Core Web Vitals',
+  'Analyse des métadonnées et de la structure',
+  'Cartographie des parcours de conversion',
+  'Capture d\u2019écran pour analyse visuelle',
+  'Évaluation du positionnement et des preuves',
+  'Détection analytics, CRM et automatisation',
+  'Pondération et génération du diagnostic'
+];
+
+const OPPS = {
+  conversion: { title: 'Reconstruire le parcours de conversion', body: 'Un formulaire générique porte tout le tunnel. Les visiteurs à forte intention ont besoin d\u2019une prise de rendez-vous, les autres d\u2019une porte d\u2019entrée moins engageante.', impact: 'ÉLEVÉ', effort: 'MOYEN' },
+  seo: { title: 'Construire l\u2019architecture de contenu', body: 'Le site ne ressort que sur son propre nom. Des pages dédiées par solution et par secteur sont nécessaires pour capter les recherches à intention commerciale.', impact: 'ÉLEVÉ', effort: 'MOYEN' },
+  performance: { title: 'Alléger le chemin critique', body: 'Images trop lourdes et scripts bloquants retardent l\u2019affichage sur mobile, ce qui pénalise la visibilité comme les campagnes.', impact: 'MOYEN', effort: 'FAIBLE' },
+  authority: { title: 'Clarifier le positionnement en haut de page', body: 'L\u2019accroche décrit l\u2019entreprise plutôt que le résultat client. La crédibilité se décide dans les cinq premières secondes.', impact: 'ÉLEVÉ', effort: 'FAIBLE' },
+  ux: { title: 'Simplifier la hiérarchie et la navigation mobile', body: 'La profondeur de navigation ajoute de la friction sur les chemins qui mènent au contact, surtout sur mobile.', impact: 'MOYEN', effort: 'MOYEN' },
+  growth: { title: 'Connecter la mesure aux résultats commerciaux', body: 'Analytics, CRM et prise de rendez-vous ne sont pas reliés : impossible d\u2019attribuer les efforts d\u2019acquisition aux opportunités réelles.', impact: 'MOYEN', effort: 'FAIBLE' }
+};
+
+const LEVELS = [
+  { min: 90, name: 'NIVEAU ÉLITE', blurb: 'Présence digitale très optimisée. Les gains viennent désormais de l\u2019expérimentation.' },
+  { min: 75, name: 'NIVEAU AVANCÉ', blurb: 'Fondation solide, avec des optimisations significatives encore disponibles.' },
+  { min: 60, name: 'NIVEAU CROISSANCE', blurb: 'Opportunités importantes détectées. Gains structurels atteignables en un trimestre.' },
+  { min: 40, name: 'NIVEAU RECONSTRUCTION', blurb: 'Faiblesses majeures sur la conversion et la visibilité.' },
+  { min: 0, name: 'NIVEAU CRITIQUE', blurb: 'L\u2019infrastructure digitale demande une attention immédiate avant tout investissement.' }
+];
+
+const FAMILIES = [
+  { tag: 'A', title: 'Fondation Digitale', summary: 'La présence professionnelle : stratégie, UX/UI, site, bases SEO et analytics.', outcome: 'Une présence qui reflète enfin votre valeur réelle.', long: 'Le socle de votre présence en ligne : positionnement, expérience, site performant et outils de contact adaptés à la réalité de vos prospects.', items: ['Stratégie et UX/UI', 'Site web professionnel', 'Bases SEO et analytics', 'Intégration WhatsApp et formulaires', 'Prise de rendez-vous', 'Maintenance'] },
+  { tag: 'B', title: 'Systèmes de Croissance', summary: 'Acquisition et conversion : SEO, landing pages, CRM et automatisation du suivi.', outcome: 'Un flux d\u2019opportunités qualifiées, prévisible.', long: 'Le système qui transforme la visibilité en opportunités qualifiées, puis les opportunités en rendez-vous — sans dépendre uniquement des recommandations.', items: ['Landing pages et tunnels', 'SEO et visibilité locale', 'Capture et qualification des leads', 'CRM et pipeline commercial', 'Automatisations de suivi', 'E-mail / WhatsApp et analytics'] },
+  { tag: 'C', title: 'Opérations Digitales', summary: 'Digitalisation interne : CRM sur mesure, tableaux de bord, espaces clients et workflows.', outcome: 'Moins de temps perdu, plus de visibilité sur l\u2019activité.', long: 'La digitalisation de votre fonctionnement interne : ce qui se fait aujourd\u2019hui à la main, dans des fichiers ou des conversations dispersées.', items: ['CRM personnalisé', 'Tableaux de bord', 'Automatisation des processus', 'Espaces clients', 'Outils internes et intégrations', 'Workflows assistés par IA'] },
+  { tag: 'D', title: 'Technologie sur mesure', summary: 'Applications, plateformes, MVP, API et solutions IA construites autour d\u2019un problème précis.', outcome: 'Un actif technologique qui vous appartient.', long: 'Quand aucun outil du marché ne répond au problème, nous construisons la solution — du MVP à la plateforme complète.', items: ['Applications web', 'Plateformes métier', 'MVP produit', 'API et intégrations', 'Solutions IA', 'Logiciels sur mesure'] }
+];
+
+const METHOD = [
+  { n: '01', title: 'Découvrir', body: 'Comprendre l\u2019entreprise, le marché, les clients, les objectifs, les contraintes et l\u2019écosystème digital existant.' },
+  { n: '02', title: 'Diagnostiquer', body: 'Identifier où l\u2019entreprise perd en visibilité, en prospects, en conversions, en temps ou en efficacité opérationnelle.' },
+  { n: '03', title: 'Concevoir', body: 'Concevoir le parcours client, l\u2019UX, l\u2019architecture et l\u2019expérience digitale autour des objectifs identifiés.' },
+  { n: '04', title: 'Construire', body: 'Développer le site, le CRM, l\u2019automatisation, l\u2019application, le tableau de bord ou la technologie sur mesure nécessaire.' },
+  { n: '05', title: 'Lancer', body: 'Déployer, configurer les analytics, tester, former les utilisateurs et rendre la solution opérationnelle.' },
+  { n: '06', title: 'Développer', body: 'Optimiser le SEO, la conversion, l\u2019automatisation, le contenu, les données et les performances.' },
+  { n: '07', title: 'Passer à l\u2019échelle', body: 'Étendre les fonctionnalités, connecter de nouveaux systèmes et transformer les besoins récurrents en produits scalables.' }
+];
+
+const JOURNEY = [
+  { n: '01', t: 'Diagnostic et découverte avant la proposition' },
+  { n: '02', t: 'Périmètre, objectifs et livrables clairement définis' },
+  { n: '03', t: 'Conception et validation avant développement' },
+  { n: '04', t: 'Implémentation et communication structurées' },
+  { n: '05', t: 'Lancement, formation et transfert' },
+  { n: '06', t: 'Maintenance, optimisation et évolution' },
+  { n: '07', t: 'Documentation des résultats et étude de cas' }
+];
+
+const CASES = [
+  {
+    img: 'assets/case-tanhealth.png', hasImg: true, noImg: false,
+    sector: 'SANTÉ & BIEN-ÊTRE', client: 'Tan Health & Wellness', stack: 'SITE · RDV · RESSOURCES PATIENTS',
+    problem: 'Présenter une structure médicale spécialisée, établir la crédibilité du praticien, expliquer des traitements complexes et convertir les visiteurs en demandes de rendez-vous.',
+    strategy: 'Une expérience centrée sur la confiance médicale, l\u2019expertise et le parcours patient — plutôt qu\u2019un simple site institutionnel.',
+    result: 'Un parcours en quatre étapes (diagnostic, consultation, plan de traitement, suivi), avec prise de rendez-vous, informations assurance et télésanté.',
+    hasKpis: true, kpis: [{ v: '98 %', l: 'de satisfaction' }, { v: '5,0/5', l: 'sur 50+ avis' }, { v: '< 2 h', l: 'de délai de réponse' }]
+  },
+  {
+    img: 'assets/case-boldtribe.png', hasImg: true, noImg: false,
+    sector: 'IMMOBILIER / INVESTISSEMENT', client: 'Bold Tribe Capital', stack: 'SITE · PORTAIL INVESTISSEUR · RDV',
+    problem: 'Créer une présence assez crédible pour l\u2019investissement immobilier, où le visiteur doit comprendre le modèle et être rassuré avant d\u2019engager son capital.',
+    strategy: 'Positionner l\u2019entreprise comme partenaire d\u2019investissement, en articulant crédibilité, pédagogie puis conversion.',
+    result: 'Un parcours « Explorer → Choisir → Suivre → Percevoir », avec opportunités détaillées, section éducative, FAQ et portail investisseur.',
+    hasKpis: true, kpis: [{ v: '1,97x', l: 'multiple annoncé' }, { v: '19,4 %', l: 'rendement annuel moyen' }, { v: '5 ans', l: 'durée de détention' }]
+  },
+  {
+    img: 'assets/case-lebien.png', hasImg: true, noImg: false,
+    sector: 'ÉVÉNEMENTIEL — CAMEROUN / USA', client: 'Le Bien Planner Deco', stack: 'SITE · RÉSERVATION · GALERIE',
+    problem: 'Transformer une activité très dépendante du visuel et du bouche-à-oreille en une présence capable de montrer immédiatement la qualité de l\u2019expérience.',
+    strategy: 'Trois piliers : esthétique, personnalisation, confiance — faire ressentir l\u2019expérience plutôt que lister des prestations.',
+    result: 'Un univers de marque structuré autour de « Authentic », « All in Details » et « Peace Of Mind », menant vers Plan Now et Book Now.',
+    hasKpis: false, kpis: []
+  },
+  {
+    img: 'assets/case-arcenciel.png', hasImg: true, noImg: false,
+    sector: 'ÉVÉNEMENTIEL — CAMEROUN', client: 'Arc en Ciel', stack: 'SITE · FORMULAIRES · PORTFOLIO',
+    problem: 'Transformer une activité d\u2019organisation d\u2019événements en une présence professionnelle capable de valoriser les réalisations et de rassurer les prospects.',
+    strategy: 'Mettre l\u2019accent sur le visuel, l\u2019expérience et la capacité à prendre en charge des événements de manière personnalisée.',
+    result: 'Une plateforme présentant services, types d\u2019événements, réalisations et identité, avec une expérience orientée conversion.',
+    hasKpis: false, kpis: []
+  }
+];
+
+const PRICING = [
+  { name: 'Fondation Digitale', role: 'Entrée / présence digitale', range: '300 000 – 600 000 FCFA' },
+  { name: 'Système de Croissance', role: 'Acquisition + conversion', range: '750 000 – 1 500 000 FCFA' },
+  { name: 'Opérations Digitales', role: 'Digitalisation de l\u2019activité', range: '1 500 000 – 5 000 000+ FCFA' },
+  { name: 'Technologie sur mesure', role: 'Logiciels et plateformes', range: 'Sur devis' },
+  { name: 'Maintenance', role: 'Support récurrent', range: '30 000 – 75 000 FCFA / mois' },
+  { name: 'SEO', role: 'Visibilité récurrente', range: '75 000 – 200 000+ FCFA / mois' },
+  { name: 'Accompagnement croissance', role: 'Optimisation et acquisition', range: '150 000 – 400 000+ FCFA / mois' }
+];
+
+const VALUES = [
+  { t: 'Excellence', b: 'Des solutions fiables et soignées, avec la même exigence sur la technique et l\u2019expérience.' },
+  { t: 'Utilité', b: 'Chaque projet résout un problème réel ou sert un objectif business concret.' },
+  { t: 'Ambition', b: 'Rendre les compétences digitales professionnelles accessibles aux entreprises ambitieuses.' },
+  { t: 'Innovation', b: 'Utiliser l\u2019IA et l\u2019automatisation lorsqu\u2019elles créent une valeur réelle.' },
+  { t: 'Engagement', b: 'Des relations durables par la réactivité, le support et l\u2019amélioration continue.' },
+  { t: 'Responsabilité', b: 'Assumer la qualité et l\u2019utilité du système livré, pas seulement l\u2019exécution des tâches.' }
+];
+
+const ROADMAP = [
+  { year: '2026', title: 'Repositionnement', body: 'Clarifier la marque, les offres, le portefeuille, les études de cas et le tunnel d\u2019acquisition.' },
+  { year: '2026–2027', title: 'Systématisation', body: 'Processus répétables, contrats récurrents, capacités CRM/automatisation et canaux d\u2019acquisition solides.' },
+  { year: '2027–2028', title: 'Productisation', body: 'Transformer les problèmes récurrents en solutions standardisées et produits verticaux.' },
+  { year: '2028+', title: 'Passage à l\u2019échelle', body: 'Afrique francophone, logiciels propriétaires et revenus SaaS récurrents.' }
+];
+
+// RIXZA X-Ray backend. Override at runtime with window.RIXZA_XRAY_API.
+const XRAY_API = (typeof window !== 'undefined' && window.RIXZA_XRAY_API) || 'http://localhost:8787';
+// WhatsApp fallback number (digits only, international format) for when the API is down.
+const RIXZA_WA = (typeof window !== 'undefined' && window.RIXZA_WHATSAPP) || '237699617906';
+
+// URL routing — each of the 7 pages maps to its own path (deep-linkable,
+// browser back/forward). Requires SPA fallback on the host (serve the app for
+// any unknown path); dev-serve.js does this locally.
+const PATH_OF = {
+  home: '/', audit: '/audit', solutions: '/solutions', method: '/methode',
+  work: '/realisations', about: '/entreprise', contact: '/contact'
+};
+const PAGE_OF = Object.fromEntries(Object.entries(PATH_OF).map(([p, path]) => [path, p]));
+// A shared audit result lives at /rapport?id=<id> and renders inside the audit page.
+const REPORT_PATH = '/rapport';
+function pageFromPath(pathname) {
+  const p = (pathname || '/').replace(/\/+$/, '') || '/';
+  if (p === REPORT_PATH) return 'audit';
+  return PAGE_OF[p] || 'home';
+}
+
+class Component extends DCLogic {
+  state = {
+    page: (typeof window !== 'undefined' ? pageFromPath(window.location.pathname) : 'home'),
+    vp: (typeof window !== 'undefined' && window.innerWidth < 768) ? 'mobile' : 'desktop',
+    step: 'input', menuOpen: false,
+    url: '', company: '', industry: '', name: '', email: '',
+    progress: 0, scanned: null, reportId: null,
+    urlError: '', formError: '', scanErrorMsg: '', unlocking: false,
+    cName: '', cCompany: '', cEmail: '', cPhone: '', cWebsite: '',
+    cNeed: '', cMessage: '', cTimeline: '', cStatus: 'idle', cError: '', cWaFallback: false,
+    linkCopied: false
+  };
+
+  componentDidMount() {
+    if (typeof window === 'undefined') return;
+    // Real responsive viewport (replaces the old manual desktop/mobile toggle).
+    this._onResize = () => {
+      const vp = window.innerWidth < 768 ? 'mobile' : 'desktop';
+      if (vp !== this.state.vp) this.setState({ vp });
+    };
+    window.addEventListener('resize', this._onResize);
+    this._onResize();
+    // Routing: sync page ↔ URL, handle shared reports, and browser back/forward.
+    this._onPop = () => this.routeTo(window.location.pathname, window.location.search);
+    window.addEventListener('popstate', this._onPop);
+    this.routeTo(window.location.pathname, window.location.search);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._t);
+    if (typeof window === 'undefined') return;
+    if (this._onPop) window.removeEventListener('popstate', this._onPop);
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+
+  routeTo(pathname, search) {
+    const p = (pathname || '/').replace(/\/+$/, '') || '/';
+    if (p === REPORT_PATH) { this.loadSharedReport(new URLSearchParams(search || '')); return; }
+    const page = pageFromPath(p);
+    if (page !== this.state.page) this.setState({ page });
+  }
+
+  // Load an already-unlocked report by id for the shareable /rapport?id=… URL.
+  loadSharedReport(params) {
+    const id = params.get('id');
+    if (!id) { this.setState({ page: 'audit', step: 'input' }); return; }
+    clearInterval(this._t);
+    this.setState({ page: 'audit', step: 'scanning', progress: 92, reportId: id });
+    fetch(XRAY_API + '/api/xray/report/' + encodeURIComponent(id))
+      .then(r => (r.ok ? r.json() : Promise.reject()))
+      .then(d => {
+        if (!d || !d.full) return Promise.reject();
+        const host = (d.full.meta.finalUrl || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+        this.setState({
+          step: 'report', url: host,
+          scanned: { scores: this.mapScores(d.full.dimensions), overall: d.full.overall, report: d.full }
+        });
+      })
+      .catch(() => this.setState({ step: 'error', scanErrorMsg: 'Ce rapport a expiré ou est introuvable. Relancez un audit.' }));
+  }
+
+  nav(page) {
+    clearInterval(this._t);
+    this.setState({ page, menuOpen: false });
+    if (typeof window !== 'undefined') {
+      const path = PATH_OF[page] || '/';
+      if (window.location.pathname !== path) window.history.pushState({ page }, '', path);
+      window.scrollTo(0, 0);
+    }
+  }
+
+  seed(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  // Map the backend's dimension array into the { key: score } shape the render
+  // expects. Backend uses "experience"; this template uses "ux".
+  mapScores(dimensions) {
+    const scores = {};
+    (dimensions || []).forEach(d => { scores[d.key === 'experience' ? 'ux' : d.key] = d.score; });
+    return scores;
+  }
+
+  // Input validation (activated before every analysis).
+  validateUrl(v) {
+    const raw = (v || '').trim();
+    if (!raw) return 'Entrez l’adresse de votre site.';
+    const host = raw.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+    if (!/^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i.test(host))
+      return 'Adresse invalide — exemple : votreentreprise.com';
+    return '';
+  }
+  validateLead(name, email) {
+    if ((name || '').trim().length < 2) return 'Entrez votre nom complet.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((email || '').trim())) return 'Entrez un e-mail professionnel valide.';
+    return '';
+  }
+
+  // Real analysis only (blueprint §15). No fabricated data: the teaser is shown
+  // ONLY when the engine returns a real result; any failure routes to an error.
+  runScan() {
+    const raw = (this.state.url || '').trim();
+    const urlError = this.validateUrl(raw);
+    if (urlError) { this.setState({ urlError }); return; }
+
+    this.setState({ urlError: '', scanErrorMsg: '', scanned: null, reportId: null, step: 'scanning', progress: 0 });
+    clearInterval(this._t);
+    const speed = this.props.scanSpeed ?? 1;
+    // Decelerating creep toward ~95% so a 30–90s real analysis still feels alive
+    // (fast early, slow near the end); jumps to 100% when the result lands.
+    this._t = setInterval(() => {
+      this.setState(s => {
+        if (s.step !== 'scanning') { clearInterval(this._t); return {}; }
+        const step = Math.max(0.35, (95 - s.progress) * 0.03) * speed;
+        return { progress: Math.min(95, s.progress + step) };
+      });
+    }, 400);
+
+    fetch(XRAY_API + '/api/xray/analyze', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ url: raw, company: this.state.company, industry: this.state.industry })
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject(j))))
+      .then(d => {
+        if (!d || !d.teaser) return Promise.reject({ error: 'Réponse invalide du service d’analyse.' });
+        clearInterval(this._t);
+        this.setState({
+          reportId: d.id, progress: 100, step: 'teaser',
+          scanned: { scores: this.mapScores(d.teaser.dimensions), overall: d.teaser.overall, report: null }
+        });
+      })
+      .catch(e => {
+        clearInterval(this._t);
+        this.setState({
+          step: 'error',
+          scanErrorMsg: (e && e.error) ? e.error : 'Service d’analyse indisponible. Réessayez dans un instant.'
+        });
+      });
+  }
+
+  // Lead capture (blueprint §6.1 step 5, §17): validate, then unlock the real
+  // report and store the lead server-side. The report is shown only with real data.
+  unlockReport() {
+    const name = (this.state.name || '').trim();
+    const email = (this.state.email || '').trim();
+    const formError = this.validateLead(name, email);
+    if (formError) { this.setState({ formError }); return; }
+    const id = this.state.reportId;
+    if (!id) { this.setState({ formError: 'Analyse expirée. Relancez l’audit.' }); return; }
+
+    this.setState({ formError: '', unlocking: true });
+    fetch(XRAY_API + '/api/xray/unlock', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id, name, email })
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject(j))))
+      .then(d => {
+        if (!d || !d.full) return Promise.reject({ error: 'Rapport indisponible.' });
+        this.setState({
+          unlocking: false, step: 'report',
+          scanned: { scores: this.mapScores(d.full.dimensions), overall: d.full.overall, report: d.full }
+        });
+        // Give the result its own shareable URL.
+        if (typeof window !== 'undefined' && id) {
+          window.history.pushState({}, '', REPORT_PATH + '?id=' + encodeURIComponent(id));
+        }
+      })
+      .catch(e => this.setState({
+        unlocking: false,
+        formError: (e && e.error) ? e.error : 'Service indisponible. Réessayez.'
+      }));
+  }
+
+  // Contact / strategic-call request (blueprint §11). Validates, then POSTs to
+  // the backend which stores it in Supabase (or the file fallback).
+  submitContact() {
+    const name = (this.state.cName || '').trim();
+    const email = (this.state.cEmail || '').trim();
+    if (name.length < 2) { this.setState({ cError: 'Entrez votre nom.' }); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { this.setState({ cError: 'Entrez un e-mail valide.' }); return; }
+
+    this.setState({ cStatus: 'sending', cError: '', cWaFallback: false });
+    fetch(XRAY_API + '/api/xray/contact', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name, email,
+        company: this.state.cCompany, phone: this.state.cPhone, website: this.state.cWebsite,
+        need: this.state.cNeed, message: this.state.cMessage, timeline: this.state.cTimeline
+      })
+    })
+      .then(r => r.json().then(j => (r.ok ? j : Promise.reject({ ...j, _validation: true }))))
+      .then(() => this.setState({ cStatus: 'sent' }))
+      .catch(e => this.setState({
+        cStatus: 'idle',
+        // Validation errors (4xx from the API) just show the message; a real
+        // network/server outage also offers the WhatsApp fallback.
+        cError: (e && e.error) ? e.error : 'Service momentanément indisponible.',
+        cWaFallback: !(e && e._validation)
+      }));
+  }
+
+  // Pre-filled WhatsApp message built from the current form fields — the backup
+  // path when the API is unreachable.
+  whatsappUrl() {
+    const s = this.state;
+    const lines = [
+      'Bonjour RIXZA, je souhaite un échange stratégique.',
+      s.cName ? 'Nom : ' + s.cName : '',
+      s.cCompany ? 'Entreprise : ' + s.cCompany : '',
+      s.cEmail ? 'E-mail : ' + s.cEmail : '',
+      s.cPhone ? 'Téléphone : ' + s.cPhone : '',
+      s.cWebsite ? 'Site : ' + s.cWebsite : '',
+      s.cNeed ? 'Besoin : ' + s.cNeed : '',
+      s.cTimeline ? 'Échéance : ' + s.cTimeline : '',
+      s.cMessage ? 'Situation : ' + s.cMessage : ''
+    ].filter(Boolean);
+    return 'https://wa.me/' + RIXZA_WA + '?text=' + encodeURIComponent(lines.join('\n'));
+  }
+
+  openWhatsapp() {
+    if (typeof window !== 'undefined') window.open(this.whatsappUrl(), '_blank');
+  }
+
+  // Copy the current shareable /rapport?id=… URL to the clipboard.
+  copyReportLink() {
+    if (typeof window === 'undefined') return;
+    const done = () => { this.setState({ linkCopied: true }); setTimeout(() => this.setState({ linkCopied: false }), 2000); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(window.location.href).then(done, done);
+      else done();
+    } catch { done(); }
+  }
+
+  ring(v) {
+    const accent = this.props.accent || '#0000FF';
+    return 'conic-gradient(' + accent + ' 0% ' + v + '%, rgba(255,255,255,0.10) ' + v + '% 100%)';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent || '#0000FF';
+    const isMobile = s.vp === 'mobile';
+    const data = s.scanned;
+    const overall = data ? data.overall : 68;
+    const report = data ? data.report : null; // real backend report once unlocked
+    const level = LEVELS.find(l => overall >= l.min) || LEVELS[LEVELS.length - 1];
+
+    // Real per-dimension notes from the engine, keyed back to this template's keys.
+    const repNote = {};
+    if (report) report.dimensions.forEach(d => { repNote[d.key === 'experience' ? 'ux' : d.key] = d.note; });
+
+    const dims = DIMS.map(d => {
+      const sc = data ? data.scores[d.key] : 60;
+      return {
+        key: d.key, label: d.label, score: sc, note: repNote[d.key] || d.note,
+        weightLabel: d.weight + '%', pct: sc + '%',
+        barColor: sc >= 75 ? accent : sc >= 55 ? '#5b5bff' : '#8a8aff'
+      };
+    });
+
+    // Prefer the engine's real, site-specific priorities; fall back to templated
+    // opportunities derived from the lowest-scoring dimensions.
+    const opportunities = (report && report.opportunities && report.opportunities.length)
+      ? report.opportunities.map(o => ({
+          rank: o.rank,
+          title: o.title,
+          body: (o.body && o.body.length > 3) ? o.body : o.action,
+          impact: String(o.impact || '').toUpperCase(),
+          effort: String(o.effort || '').toUpperCase()
+        }))
+      : dims.slice().sort((a, b) => a.score - b.score).slice(0, 3)
+          .map((d, i) => Object.assign({ rank: '0' + (i + 1) }, OPPS[d.key]));
+
+    // Visual analysis panel (only present when the vision step ran).
+    const visual = (report && report.visual && report.visual.available) ? report.visual : null;
+    const visualNotes = visual ? [
+      ...(visual.observations || []).map(t => ({ t, tag: 'CONSTAT', color: '#6b6bff' })),
+      ...(visual.redFlags || []).map(t => ({ t, tag: 'ALERTE', color: '#ff6b6b' }))
+    ] : [];
+
+    const checkIdx = Math.min(CHECK_LABELS.length - 1, Math.floor(s.progress / (100 / CHECK_LABELS.length)));
+    const checks = CHECK_LABELS.map((label, i) => ({
+      label,
+      icon: i < checkIdx ? '✓' : i === checkIdx ? '›' : '·',
+      color: i < checkIdx ? accent : i === checkIdx ? '#ffffff' : 'rgba(255,255,255,0.25)',
+      textColor: i <= checkIdx ? 'rgba(255,255,255,0.78)' : 'rgba(255,255,255,0.3)'
+    }));
+
+    const sc = data ? data.scores : null;
+    const findingColor = st => st === 'OK' ? accent : st === 'PARTIEL' ? '#e0b341' : '#ff5a5a';
+    const findings = (report && report.findings && report.findings.length)
+      // Real findings: show gaps first (most informative), cap for layout.
+      ? report.findings.slice()
+          .sort((a, b) => ({ 'ÉCART': 0, 'PARTIEL': 1, 'OK': 2 })[a.state] - ({ 'ÉCART': 0, 'PARTIEL': 1, 'OK': 2 })[b.state])
+          .slice(0, 8)
+          .map(f => ({ label: f.label, state: f.state, color: findingColor(f.state) }))
+      : [
+          { label: 'HTTPS et certificat valide', ok: true },
+          { label: 'Meta description sur les pages principales', ok: sc ? sc.seo > 55 : true },
+          { label: 'Un seul H1 avec une proposition de valeur claire', ok: sc ? sc.authority > 60 : false },
+          { label: 'Affichage principal sous 2,5 s sur mobile', ok: sc ? sc.performance > 65 : false },
+          { label: 'Parcours de prise de rendez-vous détecté', ok: sc ? sc.conversion > 62 : false },
+          { label: 'Contact WhatsApp accessible', ok: sc ? sc.conversion > 50 : true },
+          { label: 'Analytics et suivi installés', ok: sc ? sc.growth > 50 : true },
+          { label: 'Données structurées Organisation', ok: sc ? sc.seo > 70 : false }
+        ].map(f => ({ label: f.label, state: f.ok ? 'OK' : 'ÉCART', color: f.ok ? accent : '#ff5a5a' }));
+
+    const demoDims = [
+      { label: 'Performance', score: 71, pct: '71%' },
+      { label: 'Visibilité SEO', score: 64, pct: '64%' },
+      { label: 'Conversion', score: 58, pct: '58%' },
+      { label: 'Crédibilité', score: 76, pct: '76%' },
+      { label: 'Expérience', score: 69, pct: '69%' },
+      { label: 'Infrastructure', score: 52, pct: '52%' }
+    ];
+
+    const casesShort = [
+      { img: 'assets/case-tanhealth.png', sector: 'SANTÉ & BIEN-ÊTRE', client: 'Tan Health & Wellness', line: 'Un site médical structuré autour du parcours patient et de la prise de rendez-vous.', k1v: '98 %', k1l: 'de satisfaction', k2v: '5,0/5', k2l: 'sur 50+ avis' },
+      { img: 'assets/case-boldtribe.png', sector: 'IMMOBILIER / INVESTISSEMENT', client: 'Bold Tribe Capital', line: 'Une plateforme d\u2019investissement immobilier pensée pour la confiance et la pédagogie.', k1v: '1,97x', k1l: 'multiple annoncé', k2v: '19,4 %', k2l: 'rendement annuel' },
+      { img: 'assets/case-lebien.png', sector: 'ÉVÉNEMENTIEL — CMR / USA', client: 'Le Bien Planner Deco', line: 'Un univers de marque événementiel qui mène naturellement vers la réservation.', k1v: '2', k1l: 'marchés couverts', k2v: '4', k2l: 'types d\u2019événements' }
+    ];
+
+    const stepLabel = s.step === 'input' ? 'ÉTAPE 1 — VOTRE SITE'
+      : s.step === 'scanning' ? 'ÉTAPE 2 — ANALYSE'
+      : s.step === 'teaser' ? 'ÉTAPE 3 — RÉSULTAT'
+      : s.step === 'error' ? 'ANALYSE INTERROMPUE'
+      : 'ÉTAPE 4 — RAPPORT COMPLET';
+
+    return {
+      frameW: isMobile ? '412px' : '100%',
+      isMobile, isDesktop: !isMobile,
+      navPad: isMobile ? '14px 20px' : '18px 40px',
+      logoBoxW: isMobile ? '151px' : '196px',
+      logoBoxH: isMobile ? '34px' : '44px',
+      logoImgW: isMobile ? '237px' : '307px',
+      logoLeft: isMobile ? '-40px' : '-52px',
+      logoTop: isMobile ? '-56px' : '-72px',
+      heroPad: isMobile ? '56px 20px 64px' : '96px 40px 88px',
+      secPad: isMobile ? '64px 20px' : '110px 40px',
+      ctaPad: isMobile ? '72px 20px' : '120px 40px',
+      pagePad: isMobile ? '48px 20px 80px' : '80px 40px 120px',
+      bandPad: isMobile ? '32px 20px' : '44px 40px',
+      footPad: isMobile ? '48px 20px 32px' : '64px 40px 40px',
+      famPad: isMobile ? '32px 22px' : '44px 40px',
+      casePad: isMobile ? '28px 22px' : '36px 34px',
+      caseImgH: isMobile ? '190px' : '300px',
+      h1Size: isMobile ? '38px' : '66px',
+      h1Size2: isMobile ? '34px' : '54px',
+      h2Size: isMobile ? '30px' : '44px',
+      ctaSize: isMobile ? '32px' : '54px',
+      leadSize: isMobile ? '17px' : '19px',
+      scanSize: isMobile ? '24px' : '34px',
+      dimLabelW: isMobile ? '104px' : '132px',
+      logoGap: isMobile ? '18px' : '48px',
+
+      isHome: s.page === 'home', isAudit: s.page === 'audit',
+      isSolutions: s.page === 'solutions', isMethod: s.page === 'method',
+      isWork: s.page === 'work', isAbout: s.page === 'about',
+      isContact: s.page === 'contact',
+      goHome: () => this.nav('home'),
+      goAudit: () => { this.nav('audit'); this.setState({ step: 'input' }); },
+      goSolutions: () => this.nav('solutions'),
+      goMethod: () => this.nav('method'),
+      goWork: () => this.nav('work'),
+      goAbout: () => this.nav('about'),
+      goContact: () => this.nav('contact'),
+
+      menuOpen: isMobile && s.menuOpen,
+      burgerSecond: s.menuOpen ? accent : '#ffffff',
+      toggleMenu: () => this.setState(st => ({ menuOpen: !st.menuOpen })),
+      menuSolutions: () => this.nav('solutions'),
+      menuMethod: () => this.nav('method'),
+      menuWork: () => this.nav('work'),
+      menuAbout: () => this.nav('about'),
+      menuContact: () => this.nav('contact'),
+      menuAudit: () => { this.nav('audit'); this.setState({ step: 'input' }); },
+
+      url: s.url, company: s.company, industry: s.industry, name: s.name, email: s.email,
+      setUrl: e => this.setState({ url: e.target.value, urlError: '' }),
+      setCompany: e => this.setState({ company: e.target.value }),
+      setIndustry: e => this.setState({ industry: e.target.value }),
+      setName: e => this.setState({ name: e.target.value, formError: '' }),
+      setEmail: e => this.setState({ email: e.target.value, formError: '' }),
+      startScan: () => this.runScan(),
+      unlock: () => this.unlockReport(),
+      retryScan: () => this.setState({ step: 'input', scanErrorMsg: '', progress: 0 }),
+      resetAudit: () => { if (typeof window !== 'undefined' && window.location.pathname === REPORT_PATH) window.history.pushState({}, '', '/audit'); this.setState({ step: 'input', url: '', company: '', progress: 0, scanned: null, reportId: null, urlError: '', formError: '', scanErrorMsg: '', unlocking: false }); },
+      copyReportLink: () => this.copyReportLink(),
+      copyLinkLabel: s.linkCopied ? 'Lien copié ✓' : 'Copier le lien',
+
+      urlError: s.urlError, showUrlError: !!s.urlError,
+      urlBorder: s.urlError ? '#ff6b6b' : 'rgba(255,255,255,0.18)',
+      formError: s.formError, showFormError: !!s.formError,
+      leadBorder: s.formError ? '#ff6b6b' : 'rgba(255,255,255,0.18)',
+      scanErrorMsg: s.scanErrorMsg,
+      unlockLabel: s.unlocking ? 'Analyse en cours…' : 'Voir le rapport complet',
+
+      cName: s.cName, cCompany: s.cCompany, cEmail: s.cEmail, cPhone: s.cPhone,
+      cWebsite: s.cWebsite, cNeed: s.cNeed, cMessage: s.cMessage, cTimeline: s.cTimeline,
+      setCName: e => this.setState({ cName: e.target.value, cError: '' }),
+      setCCompany: e => this.setState({ cCompany: e.target.value }),
+      setCEmail: e => this.setState({ cEmail: e.target.value, cError: '' }),
+      setCPhone: e => this.setState({ cPhone: e.target.value }),
+      setCWebsite: e => this.setState({ cWebsite: e.target.value }),
+      setCNeed: e => this.setState({ cNeed: e.target.value }),
+      setCMessage: e => this.setState({ cMessage: e.target.value }),
+      setCTimeline: e => this.setState({ cTimeline: e.target.value }),
+      submitContact: () => this.submitContact(),
+      showContactForm: s.cStatus !== 'sent', contactSent: s.cStatus === 'sent',
+      showContactError: !!s.cError, cError: s.cError,
+      showContactWa: !!s.cWaFallback, openContactWa: () => this.openWhatsapp(),
+      contactBtnLabel: s.cStatus === 'sending' ? 'Envoi…' : 'Demander un échange',
+
+      showInput: s.step === 'input', showScanning: s.step === 'scanning',
+      showTeaser: s.step === 'teaser', showReport: s.step === 'report',
+      showError: s.step === 'error',
+      showVisual: !!visualNotes.length, visualNotes,
+      stepLabel,
+      displayUrl: (s.url || 'votreentreprise.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
+      progressPct: Math.round(s.progress) + '%',
+      currentCheck: CHECK_LABELS[checkIdx],
+      checks, dims, opportunities, findings,
+      score: overall, levelName: level.name, levelBlurb: level.blurb,
+      scoreRing: this.ring(overall),
+      demoScore: 68, demoRing: this.ring(68), demoDims,
+
+      families: FAMILIES, method: METHOD, journey: JOURNEY,
+      cases: CASES, casesShort, pricing: PRICING, values: VALUES, roadmap: ROADMAP
+    };
+  }
+}
+
+</script>
+</body>
+</html>
