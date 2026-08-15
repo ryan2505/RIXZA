@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RIXZA — Scroll Effect</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  html, body { margin: 0; padding: 0; background: #000; color: #fff;
+    font-family: 'Archivo', 'Helvetica Neue', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+
+  /* Intro / outro spacers — only for this demo page, not part of the effect */
+  .rx-demo-pad { min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 40px; }
+  .rx-demo-pad h1 { margin: 0; font-size: clamp(28px, 6vw, 64px); font-weight: 600; letter-spacing: -0.03em; }
+  .rx-demo-pad p { margin: 0; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; }
+  .rx-demo-cue { font-size: 12px; letter-spacing: 0.5em; color: rgba(255,255,255,0.4);
+    animation: rxbob 1.8s ease-in-out infinite; }
+  @keyframes rxbob { 0%,100% { transform: translateY(0); opacity: .4 } 50% { transform: translateY(6px); opacity: .9 } }
+
+  /* ===================== SCROLL-SCRUB VIDEO — the reusable effect ===================== */
+  .rx-scrollvid { position: relative; height: var(--rx-track, 400vh); background: #000; }
+  .rx-scrollvid__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; }
+  .rx-scrollvid__video { width: 100%; height: 100%; object-fit: contain;
+    background: #000; display: block; pointer-events: none; }
+  /* ==================================================================================== */
+</style>
+</head>
+<body>
+
+  <!-- demo intro (remove when embedding) -->
+  <div class="rx-demo-pad">
+    <h1>RIXZA</h1>
+    <p>L'identité qui converge — au rythme de votre scroll.</p>
+    <div class="rx-demo-cue">SCROLL ↓</div>
+  </div>
+
+  <!-- ==== COPY THIS BLOCK into your site to attach the scroll effect ==== -->
+  <section class="rx-scrollvid" style="--rx-track: 400vh">
+    <div class="rx-scrollvid__sticky">
+      <video class="rx-scrollvid__video" muted playsinline webkit-playsinline preload="auto">
+        <source src="assets/rixza-convergence-scrub.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+  <!-- ==== /COPY ==== -->
+
+  <!-- demo outro (remove when embedding) -->
+  <div class="rx-demo-pad">
+    <p style="font-family:monospace;letter-spacing:0.16em;color:#6b6bff">CONVERGENCE · TRANSFORMATION · MOMENTUM</p>
+    <h1>Parlons de votre système.</h1>
+  </div>
+
+  <script>
+  // Scroll drives video.currentTime — attach once, supports multiple .rx-scrollvid on a page.
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.rx-scrollvid').forEach(function (sec) {
+      var video = sec.querySelector('.rx-scrollvid__video');
+      if (!video) return;
+      var duration = 0, shown = 0, unlocked = false;
+
+      function readMeta() { duration = isFinite(video.duration) ? video.duration : 0; }
+      if (video.readyState >= 1) readMeta();
+      video.addEventListener('loadedmetadata', readMeta);
+      video.load();
+
+      // Some mobile browsers won't decode frames for seeking until the video has "played".
+      function unlock() {
+        if (unlocked) return; unlocked = true;
+        var pr = video.play();
+        if (pr && pr.then) pr.then(function () { video.pause(); }).catch(function () {});
+      }
+      ['touchstart', 'wheel', 'scroll', 'pointerdown'].forEach(function (ev) {
+        window.addEventListener(ev, unlock, { once: true, passive: true });
+      });
+
+      function progress() {
+        var rect = sec.getBoundingClientRect();
+        var scrollable = rect.height - window.innerHeight; // distance travelled while sticky
+        if (scrollable <= 0) return 0;
+        return Math.max(0, Math.min(1, -rect.top / scrollable));
+      }
+
+      function frame() {
+        if (duration) {
+          var target = progress() * duration;
+          // ease the displayed time toward the target for buttery scrubbing
+          shown += (target - shown) * (reduce ? 1 : 0.2);
+          if (Math.abs(target - shown) < 0.004) shown = target;
+          if (!video.seeking && Math.abs(video.currentTime - shown) > 0.004) {
+            try { video.currentTime = shown; } catch (e) {}
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+  })();
+  </script>
+</body>
+</html>
