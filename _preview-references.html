@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Preview — Ils nous ont fait confiance</title>
+<style>
+  html,body{margin:0;background:#000;font-family:'Space Grotesk',system-ui,sans-serif}
+  @keyframes rxmarquee { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+  .band{padding:34px 40px;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);overflow:hidden}
+  .wrap{max-width:1280px;margin:0 auto}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:rgba(255,255,255,0.4);margin-bottom:30px}
+  .mask{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent)}
+  .track{display:flex;align-items:center;gap:70px;width:max-content;animation:rxmarquee 32s linear infinite}
+  .track img{width:auto;flex:0 0 auto;object-fit:contain;filter:brightness(0) invert(1);opacity:0.55;transition:opacity .3s}
+  .track img:hover{opacity:1}
+</style>
+</head>
+<body>
+  <div class="band"><div class="wrap">
+    <div class="kicker">ILS NOUS ONT FAIT CONFIANCE</div>
+    <div class="mask"><div class="track">
+      <img src="assets/clients/tanhealth.png"  style="height:42px">
+      <img src="assets/clients/boldtribe.png"  style="height:52px">
+      <img src="assets/clients/arcenciel.png"  style="height:46px">
+      <img src="assets/clients/zipclean.png"   style="height:42px">
+      <img src="assets/clients/smarthouse.png" style="height:38px">
+      <img src="assets/clients/tanhealth.png"  style="height:42px">
+      <img src="assets/clients/boldtribe.png"  style="height:52px">
+      <img src="assets/clients/arcenciel.png"  style="height:46px">
+      <img src="assets/clients/zipclean.png"   style="height:42px">
+      <img src="assets/clients/smarthouse.png" style="height:38px">
+    </div></div>
+  </div></div>
+</body>
+</html>
