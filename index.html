@@ -419,7 +419,7 @@
       </sc-if>
 
       <sc-if value="{{ showTeaser }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:44px;align-items:center">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:44px;align-items:start">
         <div style="background:#050505;border:1px solid rgba(255,255,255,0.14);padding:36px;text-align:center">
           <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:rgba(255,255,255,0.42);margin-bottom:22px">VOTRE SCORE RIXZA</div>
           <div style="width:186px;height:186px;margin:0 auto 22px;border-radius:50%;background:{{ scoreRing }};display:flex;align-items:center;justify-content:center">
@@ -432,8 +432,26 @@
           <div style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,0.5);max-width:320px;margin:0 auto">{{ levelBlurb }}</div>
         </div>
         <div>
-          <h2 style="margin:0 0 16px;font-size:{{ h2Size }};line-height:1.1;letter-spacing:-0.03em;font-weight:600">Débloquez le rapport complet</h2>
-          <p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:rgba(255,255,255,0.55)">Votre score est déjà affiché — l'e-mail sert uniquement à recevoir le rapport détaillé : les six scores, vos trois priorités, les constats techniques et les actions recommandées pour {{ displayUrl }}.</p>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#6b6bff;margin-bottom:18px">APERÇU DE VOTRE DIAGNOSTIC</div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.12)">
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:4px">Point faible principal</div>
+              <div style="font-size:18px;font-weight:600">{{ weakLabel }}</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;color:#8a8aff;line-height:1">{{ weakScore }}<span style="font-size:12px;color:rgba(255,255,255,0.4)"> /100</span></div>
+          </div>
+          <div style="border:1px solid rgba(0,0,255,0.45);background:rgba(0,0,255,0.07);padding:18px 20px;margin-bottom:20px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#6b6bff;margin-bottom:8px">PRIORITÉ N°1 DÉTECTÉE</div>
+            <div style="font-size:17.5px;font-weight:600;line-height:1.35">{{ topPriority }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:26px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:13.5px;color:rgba(255,255,255,0.5)"><span>Le plan pour corriger cette priorité</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.3)">VERROUILLÉ</span></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:13.5px;color:rgba(255,255,255,0.5)"><span>{{ moreCount }} autres priorités, classées par impact</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.3)">VERROUILLÉ</span></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:13.5px;color:rgba(255,255,255,0.5)"><span>Vos 6 scores détaillés + constats techniques</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.3)">VERROUILLÉ</span></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:13.5px;color:rgba(255,255,255,0.5)"><span>Le plan d'action recommandé 30 / 60 / 90 jours</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.12em;color:rgba(255,255,255,0.3)">VERROUILLÉ</span></div>
+          </div>
+          <h2 style="margin:0 0 10px;font-size:{{ h2Size }};line-height:1.1;letter-spacing:-0.03em;font-weight:600">Débloquez le plan complet</h2>
+          <p style="margin:0 0 22px;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,0.55)">Instantanément, par e-mail, pour {{ displayUrl }}. Score déjà affiché, aucun engagement.</p>
           <div style="display:flex;flex-direction:column;gap:13px;max-width:420px">
             <input value="{{ name }}" onChange="{{ setName }}" placeholder="Nom complet" style="width:100%;padding:15px 16px;background:#050505;border:1px solid {{ leadBorder }};color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
             <input value="{{ email }}" onChange="{{ setEmail }}" placeholder="E-mail professionnel" style="width:100%;padding:15px 16px;background:#050505;border:1px solid {{ leadBorder }};color:#fff;font-size:15px;outline:none" style-focus="border-color:#0000FF" />
@@ -1349,6 +1367,12 @@ class Component extends DCLogic {
       : dims.slice().sort((a, b) => a.score - b.score).slice(0, 3)
           .map((d, i) => Object.assign({ rank: '0' + (i + 1) }, OPPS[d.key]));
 
+    // "Minimum vital" preview shown before the e-mail gate: the single biggest
+    // priority + the weakest dimension, to open a curiosity gap toward unlock.
+    const weakDim = dims.slice().sort((a, b) => a.score - b.score)[0] || null;
+    const topPriority = opportunities[0] ? opportunities[0].title : '';
+    const moreCount = Math.max(0, opportunities.length - 1);
+
     // Visual analysis panel (only present when the vision step ran).
     const visual = (report && report.visual && report.visual.available) ? report.visual : null;
     const visualNotes = visual ? [
@@ -1498,6 +1522,7 @@ class Component extends DCLogic {
       progressPct: Math.round(s.progress) + '%',
       currentCheck: CHECK_LABELS[checkIdx],
       checks, dims, opportunities, findings,
+      topPriority, moreCount, weakLabel: weakDim ? weakDim.label : '', weakScore: weakDim ? weakDim.score : 0,
       score: overall, levelName: level.name, levelBlurb: level.blurb,
       scoreRing: this.ring(overall),
       demoScore: 68, demoRing: this.ring(68), demoDims,
