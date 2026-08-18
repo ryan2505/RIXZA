@@ -1,0 +1,50 @@
+# RIXZA — robots.txt
+# Studio digital, Douala, Cameroun
+# https://rixza.vercel.app/
+
+User-agent: *
+Allow: /
+Disallow: /uploads/
+Disallow: /xray/
+
+# AI crawlers — explicitly allowed for GEO visibility (ChatGPT, Claude, Perplexity, Gemini, etc.)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+Sitemap: https://rixza.vercel.app/sitemap.xml
